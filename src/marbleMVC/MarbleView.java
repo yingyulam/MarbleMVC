@@ -24,4 +24,16 @@ public interface MarbleView {
    * This method updates the text provided by the controller in the scoreboard
    */
   void updateInfo();
+
+  /**
+   * Change the color of the button.
+   * @param buttonIndex the index of the button
+   */
+  void setButtonColor(int buttonIndex);
+
+  /**
+   * Reset the color of the button to default.
+   * @param buttonIndex the index of the button.
+   */
+  void clearButtonColor(int buttonIndex);
 }

@@ -94,11 +94,15 @@ public class MarbleControllerImpl implements MarbleController {
     if (this.fromRow == -1 && this.fromCol == -1) {
       this.fromRow = row;
       this.fromCol = col;
+      if (getCellStatus(this.fromRow,this.fromCol) == CellStatus.OCCUPIED) {
+        view.setButtonColor(convertToButton(fromRow, fromCol));
+      }
     }
 
     else {
       this.toRow = row;
       this.toCol = col;
+      view.clearButtonColor(convertToButton(fromRow, fromCol));
     }
 
     if (this.fromRow != -1 && this.fromCol != -1 && this.toRow != -1 && this.toCol != -1) {
@@ -135,18 +139,34 @@ public class MarbleControllerImpl implements MarbleController {
   }
 
   /**
+   * Return the initial score of this game.
+   * @return the initial score of this game.
+   */
+  private int getInitialScore(){
+
+    int armSize = model.getArmSize();
+    int boardSize = model.getArmSize() * 2 + 1;
+    int forbidSize = (boardSize - armSize) / 2;
+
+    return boardSize * boardSize - 4 * forbidSize * forbidSize - 1;
+
+  }
+
+
+  /**
    * Pass the text message for the scoreboard in view depending on the game status.
    *
    * @return a string that represents the game status (game over or not and current score) for view.
    */
   @Override
   public String passToScoreBoard() {
+
     if (model.isGameOver()) {
-      return "Game over. Your score is " + model.getScore();
+      return "Game over. Your score is " + model.getScore() + " / " + getInitialScore();
     }
 
     else {
-      return "score: " + model.getScore();
+      return "Your score: " + model.getScore() + " / " + getInitialScore();
     }
   }
 
@@ -163,7 +183,6 @@ public class MarbleControllerImpl implements MarbleController {
       int minCol = min(fromCol, toCol);
       int maxCol = max(fromCol, toCol);
       for (int col = minCol; col <= maxCol; col++) {
-        System.out.println(col);
         view.updateCell(convertToButton(fromRow, col));
       }
     }

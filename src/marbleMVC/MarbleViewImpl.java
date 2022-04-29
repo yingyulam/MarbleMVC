@@ -8,6 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 /**
  * This class represents MarbleView Implementation. It is a child class of the JFrame class, which
@@ -16,11 +18,14 @@ import javax.swing.JPanel;
 public class MarbleViewImpl extends JFrame implements MarbleView {
 
 
+  private final JPanel mainWindow = new JPanel();
   private final JLabel scoreLabel = new JLabel();
   private final JLabel headLabel = new JLabel();
   private final JPanel scoreBoard = new JPanel();
   private final JPanel gameBoard = new JPanel();
   private final JPanel headBoard = new JPanel();
+  private final JLabel instructionLabel = new JLabel();
+
   private JButton[] buttons;
   private MarbleController controller = null;
   private int boardSize;
@@ -41,8 +46,6 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     this.add(headBoard, BorderLayout.NORTH);
     this.add(gameBoard, BorderLayout.CENTER);
     this.add(scoreBoard, BorderLayout.SOUTH);
-    this.setVisible(true);
-
   }
 
   /**
@@ -61,6 +64,7 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     setHeadBoard();
     setScoreBoard();
     setGameBoard();
+    setVisible(true);
 
   }
 
@@ -72,13 +76,23 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
 
     headLabel.setBackground(BACKGROUND_COLOR);
     headLabel.setForeground(Color.BLACK);
-    headLabel.setFont(new Font("Arial", Font.BOLD,40));
+    headLabel.setFont(new Font("Arial", Font.BOLD,50));
     headLabel.setHorizontalAlignment(JLabel.CENTER);
     headLabel.setOpaque(true);
     headLabel.setText("Marble Solitaire");
 
+    instructionLabel.setBackground(BACKGROUND_COLOR);
+    instructionLabel.setForeground(Color.BLACK);
+    instructionLabel.setFont(new Font("Arial", Font.BOLD,25));
+    instructionLabel.setOpaque(true);
+    instructionLabel.setHorizontalAlignment(JLabel.CENTER);
+    instructionLabel.setText("Move a marble by jumping over another marble vertically or "
+        + "horizontally to an empty slot.");
+
+    headBoard.setLayout(new BorderLayout());
     headBoard.setBackground(BACKGROUND_COLOR);
-    headBoard.add(headLabel);
+    headBoard.add(headLabel, BorderLayout.NORTH);
+    headBoard.add(instructionLabel, BorderLayout.SOUTH);
 
   }
 
@@ -111,10 +125,12 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     int fontSize = FRAME_SIZE / boardSize;
 
     gameBoard.setLayout(new GridLayout(boardSize, boardSize));
+    gameBoard.setBackground(Color.WHITE);
 
     for (int i = 0; i < numOfButtons; i++) {
       buttons[i] = new JButton();
       gameBoard.add(buttons[i]);
+      buttons[i].setBackground(Color.WHITE);
       buttons[i].setFont(new Font("Arial", Font.BOLD, fontSize));
       buttons[i].setFocusable(false);
       updateCell(i);
@@ -155,7 +171,21 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     scoreLabel.setText(controller.passToScoreBoard());
   }
 
+  /**
+   * Change the color of the button.
+   * @param buttonIndex the index of the button
+   */
+  public void setButtonColor(int buttonIndex) {
+    buttons[buttonIndex].setBackground(Color.PINK);
+  }
 
+  /**
+   * Reset the color of the button to default.
+   * @param buttonIndex the index of the button.
+   */
+  public void clearButtonColor(int buttonIndex) {
+    buttons[buttonIndex].setBackground(Color.WHITE);
+  }
 
 
 }
