@@ -36,6 +36,6 @@ public interface MarbleController {
 
   String passMessage();
 
-  //void update(int fromRow, int fromCol, int toRow, int toCol);
+  void update();
 
 }

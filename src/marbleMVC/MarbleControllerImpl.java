@@ -1,5 +1,8 @@
 package marbleMVC;
 
+import static java.lang.Math.*;
+
+
 /**
  * This is a Controller for Marble Solitaire: handle user moves by executing them using the model;
  * convey move outcomes to the user in some form.
@@ -85,7 +88,8 @@ public class MarbleControllerImpl implements MarbleController {
     if (this.fromRow != -1 && this.fromCol != -1 && this.toRow != -1 && this.toCol != -1) {
       try {
         model.move(fromRow, fromCol, toRow, toCol);
-        view.updateBoard();
+        //view.updateBoard();
+        update();
 
       }
       catch (IllegalArgumentException e) {
@@ -134,22 +138,28 @@ public class MarbleControllerImpl implements MarbleController {
     }
   }
 
-/*  @Override
-  public void update(fromRow, fromCol, toRow, toCol) {
+  @Override
+  public void update() {
 
     if (fromRow == toRow) {
-      for (int col = fromCol; col <= toCol; col++) {
-        System.out.println("here");
+      int minCol = min(fromCol, toCol);
+      int maxCol = max(fromCol, toCol);
+      for (int col = minCol; col <= maxCol; col++) {
+        System.out.println(col);
         view.updateCell(convertToButton(fromRow, col));
       }
     }
 
     else if (fromCol == toCol) {
-      for (int row = fromRow; row <= toRow; row++) {
+      int minRow = min(fromRow, toRow);
+      int maxRow = max(fromRow, toRow);
+      for (int row = minRow; row <= maxRow; row++) {
         view.updateCell(convertToButton(row, fromCol));
       }
     }
-  }*/
+
+    view.updateInfo();
+  }
 
 
 

@@ -152,6 +152,10 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     scoreLabel.setText(controller.passMessage());
   }
 
+  public void updateInfo() {
+    scoreLabel.setText(controller.passMessage());
+  }
+
 
 
 

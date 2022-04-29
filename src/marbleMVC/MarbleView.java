@@ -13,7 +13,9 @@ public interface MarbleView {
 
   void initializeGame(MarbleController controller);
 
-  void updateBoard();
+  //void updateBoard();
 
   void updateCell(int buttonIndex);
+
+  void updateInfo();
 }
