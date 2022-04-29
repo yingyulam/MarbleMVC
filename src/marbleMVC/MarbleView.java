@@ -5,17 +5,23 @@ package marbleMVC;
  */
 public interface MarbleView {
 
-  void setGameBoard();
-
-  void setHeadBoard();
-
-  void setScoreBoard();
-
+  /**
+   * This method assigns a MarbleController to the view and set up panels accordingly.
+   *
+   * @param controller a MarbleController object.
+   */
   void initializeGame(MarbleController controller);
 
-  //void updateBoard();
-
+  /**
+   * This method updates the cells in the view according to the CellStatus provided by the controller.
+   * The forbidden cells are set to invisible in the frame.
+   *
+   * @param buttonIndex the index number of the button that needs to be updated.
+   */
   void updateCell(int buttonIndex);
 
+  /**
+   * This method updates the text provided by the controller in the scoreboard
+   */
   void updateInfo();
 }

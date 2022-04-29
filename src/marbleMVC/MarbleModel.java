@@ -55,7 +55,7 @@ public interface MarbleModel {
    * Return the CellStatus (enum type) of the specific cell.
    * @param row the row of the cell.
    * @param col the column of the cell.
-   * @return
+   * @return the CellStatus of the specific cell
    */
   CellStatus getCellStatus(int row, int col) throws IllegalArgumentException;
 

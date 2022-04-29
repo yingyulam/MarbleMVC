@@ -18,6 +18,7 @@ public class MarbleControllerImpl implements MarbleController {
 
   /**
    * This is the constructor of the MarbleControllerImpl class.
+   *
    * @param model A MarbleModel object.
    * @param view A MarbleView object.
    * @throws IllegalArgumentException
@@ -57,7 +58,9 @@ public class MarbleControllerImpl implements MarbleController {
    */
   @Override
   public int getArmSize() {
+
     return model.getArmSize();
+
   }
 
   /**
@@ -65,15 +68,28 @@ public class MarbleControllerImpl implements MarbleController {
    *
    * @param row the row of the cell.
    * @param col the column of the cell.
-   * @return
+   * @return the CellStatus of the specific cell.
    */
   @Override
   public CellStatus getCellStatus(int row, int col) {
+
     return model.getCellStatus(row, col);
+
   }
 
+  /**
+   * Try to make a move on the game board. It considers the clicks in pairs. If it is the first
+   * click in a pair, the position will be stored as the "from position", otherwise the "to position".
+   *
+   * @param row the row index of the cell that the marble is moving from if it is the first click
+   *            in a pair; the row index of the cell that the marble is moving to if it is the
+   *            second click in a pair.
+   * @param col the column index of the cell that the marble is moving from if it is the first click
+   *            in a pair; the column index of the cell that the marble is moving to if it is the
+   *            second click in a pair.
+   */
   @Override
-  public void move(int row, int col) {
+  public void tryToMove(int row, int col) {
 
     if (this.fromRow == -1 && this.fromCol == -1) {
       this.fromRow = row;
@@ -88,11 +104,11 @@ public class MarbleControllerImpl implements MarbleController {
     if (this.fromRow != -1 && this.fromCol != -1 && this.toRow != -1 && this.toCol != -1) {
       try {
         model.move(fromRow, fromCol, toRow, toCol);
-        //view.updateBoard();
-        update();
+        updateBoard();
 
       }
-      catch (IllegalArgumentException e) {
+      catch (IllegalArgumentException ignored) {
+
       }
 
       this.fromRow = -1;
@@ -102,33 +118,29 @@ public class MarbleControllerImpl implements MarbleController {
     }
   }
 
-  @Override
-  public int convertToRow(int buttonIndex) {
 
-    int armSize = model.getArmSize();
-    int boardSize = armSize * 2 + 1;
-    return buttonIndex / boardSize;
-
-  }
-
-  @Override
-  public int convertToCol(int buttonIndex) {
-    int armSize = model.getArmSize();
-    int boardSize = armSize * 2 + 1;
-
-    return buttonIndex % boardSize;
-  }
-
-  @Override
-  public int convertToButton(int row, int col) {
+  /**
+   * Covert the row and column index of a cell to the corresponding button index for the view.
+   *
+   * @param row the row index of the cell.
+   * @param col the column index of the cell.
+   * @return the corresponding button index of the cell for the view.
+   */
+  private int convertToButton(int row, int col) {
 
     int armSize = model.getArmSize();
     int boardSize = armSize * 2 + 1;
     return row * boardSize + col;
+
   }
 
+  /**
+   * Pass the text message for the scoreboard in view depending on the game status.
+   *
+   * @return a string that represents the game status (game over or not and current score) for view.
+   */
   @Override
-  public String passMessage() {
+  public String passToScoreBoard() {
     if (model.isGameOver()) {
       return "Game over. Your score is " + model.getScore();
     }
@@ -138,8 +150,14 @@ public class MarbleControllerImpl implements MarbleController {
     }
   }
 
+  /**
+   * Update the game board for view after a successful move.
+   *
+   * After every move, it checks only the three cells that have been changed and update in the view
+   * accordingly, which is more efficient than updating the entire board after each move.
+   */
   @Override
-  public void update() {
+  public void updateBoard() {
 
     if (fromRow == toRow) {
       int minCol = min(fromCol, toCol);
@@ -160,7 +178,5 @@ public class MarbleControllerImpl implements MarbleController {
 
     view.updateInfo();
   }
-
-
 
 }

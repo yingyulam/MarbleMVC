@@ -10,7 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * This class represents the implementation of MarbleView.
+ * This class represents MarbleView Implementation. It is a child class of the JFrame class, which
+ * creates the user interface for the player.
  */
 public class MarbleViewImpl extends JFrame implements MarbleView {
 
@@ -22,25 +23,31 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
   private final JPanel headBoard = new JPanel();
   private JButton[] buttons;
   private MarbleController controller = null;
-  private int numOfButtons;
   private int boardSize;
   private final int FRAME_SIZE = 500;
-  private Color BACKGROUND_COLOR = new Color(121, 166, 217);
+  private final Color BACKGROUND_COLOR = new Color(121, 166, 217);
 
 
   /**
-   * This is the constructor of the MarbleViewImpl.
+   * This is the constructor of the MarbleViewImpl. It sets up basic settings for the frame, and
+   * add different panels to the frame.
    */
   public MarbleViewImpl() {
 
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setSize(FRAME_SIZE, FRAME_SIZE);
     this.setBackground(BACKGROUND_COLOR);
+    this.setLayout(new BorderLayout());
+    this.add(headBoard, BorderLayout.NORTH);
+    this.add(gameBoard, BorderLayout.CENTER);
+    this.add(scoreBoard, BorderLayout.SOUTH);
+    this.setVisible(true);
 
   }
 
   /**
-   * Assign the MarbleController object to the controller field in this object.
+   * This method assigns a MarbleController to the view and set up panels accordingly.
+   *
    * @param controller a MarbleController object.
    */
   @Override
@@ -49,25 +56,19 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     this.controller = controller;
     int armSize = controller.getArmSize();
     boardSize = armSize * 2 + 1;
-    numOfButtons = boardSize * boardSize;
+    int numOfButtons = boardSize * boardSize;
     buttons = new JButton[numOfButtons];
     setHeadBoard();
     setScoreBoard();
     setGameBoard();
-    this.setLayout(new BorderLayout());
-    this.add(headBoard, BorderLayout.NORTH);
-    this.add(gameBoard, BorderLayout.CENTER);
-    this.add(scoreBoard, BorderLayout.SOUTH);
-    setVisible(true);
 
   }
 
   /**
-   * Create the headboard of this game.
-   * @return a JPanel object that is the headboard of the game.
+   * This method sets up the headboard of this game. It shows the name of the game.
+   *
    */
-  @Override
-  public void setHeadBoard() {
+  private void setHeadBoard() {
 
     headLabel.setBackground(BACKGROUND_COLOR);
     headLabel.setForeground(Color.BLACK);
@@ -82,18 +83,17 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
   }
 
   /**
-   * Create the headboard of this game.
-   * @return a JPanel object that is the headboard of the game.
+   * This method sets up the score board of the game. The score board shows the current score of the
+   * game and if the game is over.
    */
-  @Override
-  public void setScoreBoard() {
+  private void setScoreBoard() {
 
     scoreLabel.setBackground(BACKGROUND_COLOR);
     scoreLabel.setForeground(Color.BLACK);
     scoreLabel.setFont(new Font("Arial", Font.BOLD,25));
     scoreLabel.setHorizontalAlignment(JLabel.CENTER);
     scoreLabel.setOpaque(true);
-    scoreLabel.setText(controller.passMessage());
+    scoreLabel.setText(controller.passToScoreBoard());
 
     scoreBoard.setBackground(BACKGROUND_COLOR);
     scoreBoard.add(scoreLabel);
@@ -101,14 +101,12 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
 
 
   /**
-   * Create the board of this game.
-   * @return a JPanel object that is the board of this game.
+   * This method sets up the game board of the game. Its pattern depends on the game board model
+   * passed to the controller. It also adds ActionListeners to each button. The tryToMove method in
+   * the controller will be called if a button is clicked.
    */
-  @Override
-  public void setGameBoard() {
+  private void setGameBoard() {
 
-    int armSize = controller.getArmSize();
-    int boardSize = armSize * 2 + 1;
     int numOfButtons = boardSize * boardSize;
     int fontSize = FRAME_SIZE / boardSize;
 
@@ -120,16 +118,22 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
       buttons[i].setFont(new Font("Arial", Font.BOLD, fontSize));
       buttons[i].setFocusable(false);
       updateCell(i);
-      int row = controller.convertToRow(i);
-      int col = controller.convertToCol(i);
-      buttons[i].addActionListener(e -> {controller.move(row, col);});
+      int row = i / boardSize;
+      int col = i % boardSize;
+      buttons[i].addActionListener(e -> {controller.tryToMove(row, col);});
     }
   }
 
+  /**
+   * This method updates the cells in the view according to the CellStatus provided by the controller.
+   * The forbidden cells are set to invisible in the frame.
+   *
+   * @param buttonIndex the index number of the button that needs to be updated.
+   */
   public void updateCell(int buttonIndex) {
 
-    int row = controller.convertToRow(buttonIndex);
-    int col = controller.convertToCol(buttonIndex);
+    int row = buttonIndex / boardSize;
+    int col = buttonIndex % boardSize;
 
     if (controller.getCellStatus(row, col) == CellStatus.FORBIDDEN) {
       buttons[buttonIndex].setVisible(false);
@@ -144,16 +148,11 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
     }
   }
 
-  public void updateBoard() {
-    for (int i = 0; i < numOfButtons; i++) {
-      updateCell(i);
-    }
-
-    scoreLabel.setText(controller.passMessage());
-  }
-
+  /**
+   * This method updates the text provided by the controller in the scoreboard
+   */
   public void updateInfo() {
-    scoreLabel.setText(controller.passMessage());
+    scoreLabel.setText(controller.passToScoreBoard());
   }
 
 

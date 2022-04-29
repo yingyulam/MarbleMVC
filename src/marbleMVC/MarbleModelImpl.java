@@ -8,7 +8,7 @@ import static java.lang.Math.abs;
  */
 public class MarbleModelImpl implements MarbleModel {
 
-  private static int STANDARD_ARM_SIZE = 3;
+  private static final int STANDARD_ARM_SIZE = 3;
   private final int armSize;
   private final int boardSize;
   private CellStatus[][] board;
