@@ -78,48 +78,73 @@ public class MarbleControllerImpl implements MarbleController {
   }
 
   /**
-   * Try to make a move on the game board. It considers the clicks in pairs. If it is the first
-   * click in a pair, the position will be stored as the "from position", otherwise the "to position".
+   * Record the position being clicked if appropriate.
    *
-   * @param row the row index of the cell that the marble is moving from if it is the first click
-   *            in a pair; the row index of the cell that the marble is moving to if it is the
-   *            second click in a pair.
-   * @param col the column index of the cell that the marble is moving from if it is the first click
-   *            in a pair; the column index of the cell that the marble is moving to if it is the
-   *            second click in a pair.
+   * @param row the row index of the cell that is clicked.
+   * @param col the column index of the cell that is clicked.
+   *
    */
   @Override
-  public void tryToMove(int row, int col) {
+  public void recordPosition(int row, int col) {
 
-    if (this.fromRow == -1 && this.fromCol == -1) {
+    if (model.isGameOver()) {
+      return;
+    }
+
+    if (this.fromRow == -1 && this.fromCol == -1 && getCellStatus(row, col) == CellStatus.OCCUPIED) {
       this.fromRow = row;
       this.fromCol = col;
-      if (getCellStatus(this.fromRow,this.fromCol) == CellStatus.OCCUPIED) {
-        view.setButtonColor(convertToButton(fromRow, fromCol));
-      }
+      view.setButtonColor(convertToButton(fromRow, fromCol));
     }
 
-    else {
+    else if (this.toRow == -1 && this.toCol == -1 &&
+        getCellStatus(fromRow, fromCol) == CellStatus.OCCUPIED){
       this.toRow = row;
       this.toCol = col;
-      view.clearButtonColor(convertToButton(fromRow, fromCol));
     }
 
-    if (this.fromRow != -1 && this.fromCol != -1 && this.toRow != -1 && this.toCol != -1) {
-      try {
-        model.move(fromRow, fromCol, toRow, toCol);
-        updateBoard();
+    tryToMove();
 
-      }
-      catch (IllegalArgumentException ignored) {
+  }
 
-      }
+  /**
+   * Try to make a move on the board. If a move is successful, the "from" and "to" positions will be
+   * reset to -1. If a move is impossible, the positions will be changed accordingly.
+   */
+  private void tryToMove() {
 
+    if (this.fromRow == -1 && this.fromCol == -1 || this.toRow == -1 && this.toCol == -1) {
+
+      return;
+    }
+
+    try {
+      model.move(fromRow, fromCol, toRow, toCol);
+      updateBoard();
+      view.clearButtonColor(convertToButton(fromRow, fromCol));
       this.fromRow = -1;
       this.fromCol = -1;
       this.toRow = -1;
       this.toCol = -1;
     }
+
+    catch (IllegalArgumentException e) {
+      if (getCellStatus(toRow, toCol) == CellStatus.OCCUPIED) {
+        view.clearButtonColor(convertToButton(fromRow, fromCol));
+        this.fromRow = this.toRow;
+        this.fromCol = this.toCol;
+        this.toRow = -1;
+        this.toCol = -1;
+        view.setButtonColor(convertToButton(fromRow, fromCol));
+      }
+
+      else if (getCellStatus(toRow, toCol) == CellStatus.EMPTY) {
+        this.toRow = -1;
+        this.toCol = -1;
+      }
+
+    }
+
   }
 
 

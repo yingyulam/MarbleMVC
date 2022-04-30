@@ -28,17 +28,12 @@ public interface MarbleController {
   CellStatus getCellStatus(int row, int col);
 
   /**
-   * Try to make a move on the game board. It considers the clicks in pairs. If it is the first
-   * click in a pair, the position will be stored as the "from position", otherwise the "to position".
+   * Record the position being clicked.
    *
-   * @param row the row index of the cell that the marble is moving from if it is the first click
-   *            in a pair; the row index of the cell that the marble is moving to if it is the
-   *            second click in a pair.
-   * @param col the column index of the cell that the marble is moving from if it is the first click
-   *            in a pair; the column index of the cell that the marble is moving to if it is the
-   *            second click in a pair.
+   * @param row the row index of the cell that is clicked.
+   * @param col the column index of the cell that is clicked.
    */
-  void tryToMove(int row, int col);
+  void recordPosition(int row, int col);
 
   /**
    * Pass the text message for the scoreboard in view depending on the game status.

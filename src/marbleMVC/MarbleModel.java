@@ -20,7 +20,7 @@ public interface MarbleModel {
    * @throws IllegalArgumentException if the move is not possible
    */
   void move(int fromRow,int fromCol,int toRow,int toCol) throws
-          IllegalArgumentException ;
+          IllegalArgumentException;
 
   /**
    * Determine and return if the game is over or not. A game is over if no

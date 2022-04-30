@@ -8,8 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 
 /**
  * This class represents MarbleView Implementation. It is a child class of the JFrame class, which
@@ -136,7 +134,7 @@ public class MarbleViewImpl extends JFrame implements MarbleView {
       updateCell(i);
       int row = i / boardSize;
       int col = i % boardSize;
-      buttons[i].addActionListener(e -> {controller.tryToMove(row, col);});
+      buttons[i].addActionListener(e -> {controller.recordPosition(row, col);});
     }
   }
 
